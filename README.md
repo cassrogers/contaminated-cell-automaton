@@ -17,4 +17,4 @@ This program is an extension of a simple cell automaton written in Processing by
 
 ### Using the Contaminated Cell Automaton
 
-**PLEASE NOTE:** This program is not yet functional. Running it produces a grid of randomly distributed cells. It will cycle through the moveCell method until an `array out of bounds index exception` is thrown (at a different iteration each time due to the random distribution of cells. The program will also only choose the cell diagonally up and left from the randomly chosen cell.
+**PLEASE NOTE:** This program is not yet functional. Running it produces a grid of randomly distributed cells. It will cycle through the moveCell method until an `array out of bounds index exception` is thrown (at a different iteration each time due to the random distribution of cells). The program will also only choose the cell diagonally up and left from the randomly chosen cell.
