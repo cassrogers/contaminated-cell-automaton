@@ -46,7 +46,7 @@ public class CellAutomaton extends JFrame
   static final Cell[] CELL_ARR = new Cell[]{red1,green2,blue3,mag4,yel5,cyan6,oran7,purp8,pink9,darkgr10};
 
   // Constants used for drawing and exploring the field of cells
-  public static final int FIELD_SIZE = 50; // size of field in squares (each 4um x 4um) -- must be EVEN
+  public static final int FIELD_SIZE = 100; // size of field in squares (each 4um x 4um) -- must be EVEN
   public static Cell[][] FIELD = new Cell[FIELD_SIZE][FIELD_SIZE]; // array containing FIELD
   public static final int[] STEP_X = new int[9]; // used to hold offsets when looking at cell's neighbours
   public static final int[] STEP_Y = new int[9]; // used to hold offsets when looking at cell's neighbours
@@ -185,7 +185,7 @@ public class CellAutomaton extends JFrame
 		int y = cellCoord[1];
 		
 		// There's a better way to do this by altering the chooseRandomCell method
-		if (x == 99 || y == 99 || x == 0 || y == 0) { return; } // if the cell is a border cell do not continue
+		if (x > 97 || y > 97 || x < 2 || y < 2) { return; } // if the cell is a border cell do not continue
 		
 		Cell chosenCell = FIELD[x][y]; // references Cell object at the chosen coordinates
 		
@@ -332,7 +332,7 @@ public class CellAutomaton extends JFrame
 		  moveCell();
 		  grid.updateGrid(FIELD);
 		  frame.add(grid);
-		  frame.setSize(1020,1040);
+		  frame.setSize(720,740);
 		  frame.setLocationRelativeTo(null);
 		  frame.setVisible(true);
 		  System.out.println(i);
