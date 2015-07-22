@@ -98,49 +98,59 @@ public class CellAutomaton extends JFrame
     {
       for (int y=0;y<FIELD_SIZE;y++)
       {
-    	FIELD[x][y] = red1; // default cell colour
+    	// FIELD[x][y] = red1; // default cell colour
+      	FIELD[x][y] = new Cell(red,1,redProp);
         double rand = r.nextDouble();
-        
-        if (rand > cumProp[0] && rand <= cumProp[1])
-        {
-        	FIELD[x][y] = green2; // places green cell
-        }
-        else if (rand > cumProp[1] && rand <= cumProp[2])
-        {
-        	FIELD[x][y] = blue3; // places blue cell
-        }
-        else if (rand > cumProp[2] && rand <= cumProp[3])
-        {
-        	FIELD[x][y] = mag4; // places magenta cell
-        }
-        else if (rand > cumProp[3] && rand <= cumProp[4])
-        {
-        	FIELD[x][y] = yel5; // places yellow cell
-        }
-        else if (rand > cumProp[4] && rand <= cumProp[5])
-        {
-        	FIELD[x][y] = cyan6; // places cyan cell
-        }
-        else if (rand > cumProp[5] && rand <= cumProp[6])
-        {
-        	FIELD[x][y] = oran7; // places orange cell
-        }
-        else if (rand > cumProp[6] && rand <= cumProp[7])
-        {
-        	FIELD[x][y] = purp8; // places purple cell
-        }
-        else if (rand > cumProp[7] && rand <= cumProp[8])
-        {
-        	FIELD[x][y] = pink9; // places pink cell
-        }
-        else if (rand > cumProp[8] && rand <= cumProp[9])
-        {
-        	FIELD[x][y] = darkgr10; // Places dark green cell
-        }
-        if (x==0 || x == FIELD_SIZE-1 || y == 0 || y == FIELD_SIZE-1)
-        {
-          FIELD[x][y] = new Cell (black,0,0.0); // sets borders to be black "cells"
-        }
+          
+          if (rand > cumProp[0] && rand <= cumProp[1])
+          {
+          	//FIELD[x][y] = green2; // places green cell
+          	FIELD[x][y] = new Cell(green,2,greenProp);
+          }
+          else if (rand > cumProp[1] && rand <= cumProp[2])
+          {
+          	//FIELD[x][y] = blue3; // places blue cell
+          	FIELD[x][y] = new Cell(blue,3,blueProp);
+          }
+          else if (rand > cumProp[2] && rand <= cumProp[3])
+          {
+          	// FIELD[x][y] = mag4; // places magenta cell
+          	FIELD[x][y] = new Cell(mag,4,magProp);
+          }
+          else if (rand > cumProp[3] && rand <= cumProp[4])
+          {
+          	// FIELD[x][y] = yel5; // places yellow cell
+          	FIELD[x][y] = new Cell(yel,5,yelProp);
+          }
+          else if (rand > cumProp[4] && rand <= cumProp[5])
+          {
+          	//FIELD[x][y] = cyan6; // places cyan cell
+          	FIELD[x][y] = new Cell(cyan,6,cyanProp);
+          }
+          else if (rand > cumProp[5] && rand <= cumProp[6])
+          {
+          	//FIELD[x][y] = oran7; // places orange cell
+          	FIELD[x][y] = new Cell(oran,7,oranProp);
+          }
+          else if (rand > cumProp[6] && rand <= cumProp[7])
+          {
+          	//FIELD[x][y] = purp8; // places purple cell
+          	FIELD[x][y] = new Cell(purp,8,purpProp);
+          }
+          else if (rand > cumProp[7] && rand <= cumProp[8])
+          {
+          	//FIELD[x][y] = pink9; // places pink cell
+          	FIELD[x][y] = new Cell(pink,9,pinkProp);
+          }
+          else if (rand > cumProp[8] && rand <= cumProp[9])
+          {
+          	//FIELD[x][y] = darkgr10; // Places dark green cell
+          	FIELD[x][y] = new Cell(darkgr,10,darkgrProp);
+          }
+          if (x==0 || x == FIELD_SIZE-1 || y == 0 || y == FIELD_SIZE-1)
+          {
+            FIELD[x][y] = new Cell (black,0,0.0); // sets borders to be black "cells"
+          }
       }
     }
   }

@@ -34,6 +34,26 @@ public class RGB
     return b;
   }
   
+  public void setR(int newR)
+  {
+	  this.r = newR;
+  }
+  
+  public void setG(int newG)
+  {
+	  this.g = newG;
+  }
+  
+  public void setB(int newB)
+  {
+	  this.b = newB;
+  }
+  
+  public void setColour(String newColour)
+  {
+	  this.colour = newColour;
+  }
+  
   // Returns name of this Colour
   public String getColour()
   {
