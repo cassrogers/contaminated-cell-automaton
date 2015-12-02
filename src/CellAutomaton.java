@@ -4,7 +4,7 @@ import java.awt.event.*;
 
 import javax.swing.*;
 
-public class CellAutomaton extends JFrame
+public class CellAutomaton //extends JFrame
 {
   
 //==============================================================================================
@@ -190,7 +190,60 @@ public class CellAutomaton extends JFrame
   
   public static void moveCell()
 	{
-		int diffNeighTot = 0;
+	  	double noSwapE = 0.0;
+	  	double[][] swapE = new double[3][3];
+	  
+		int[] randCellCoord = chooseRandomCell();
+		int x = randCellCoord[0];
+		int y = randCellCoord[1];
+		if (x > FIELD_SIZE-3 || y > FIELD_SIZE-3 || x < 2 || y < 2) {return;}
+		
+		Cell chosenCell = new Cell(null,0,0);
+		//FIELD[x][y].copyCell(chosenCell); //Insert test case to make sure copyCell works in this case
+		chosenCell = FIELD[x][y];
+		int numDiffNeighbours = 0;
+		
+		Cell[][] surrounding = new Cell[3][3];
+		
+		// Check all surrounding cells and increment numDiffNeighbours by 1 for each different cell
+		for (int i=-1;i<2;i++)
+		{
+			for (int j=-1;j<2;j++)
+			{
+				//FIELD[x+i][y+i].copyCell(surrounding[i+1][j+1]);
+				surrounding[i+1][j+1] = FIELD[x+i][y+j];
+				if (i==0 && j==0) {continue;}
+				else if (surrounding[i+1][j+1].getCellType() != chosenCell.getCellType())
+				{
+					numDiffNeighbours++;
+				}
+			}
+		}
+		
+		// If all of the neighbours of the chosen cell are NOT the same, try swapping with each surrounding cell
+		// Store the energy of the new conformation from the swap in swapE
+		if (numDiffNeighbours > 0)
+		{
+			int[] noSwapIndex = {1,1};
+			noSwapE = cellEnergy(surrounding,noSwapIndex);
+			
+			for (int i=0;i<surrounding.length;i++)
+			{
+				for (int j=0;j<surrounding[0].length;j++)
+				{
+					if (i==1 && j==1) {continue;}
+					else
+					{
+						int [] swapIndex = {i,j};
+						System.out.println("Swapping with " + i + "," + j + "***");
+						printMatrix(surrounding);
+						swapE[i][j] = cellEnergy(surrounding,swapIndex);
+					}
+				}
+			}
+		}
+	  
+	  /*int diffNeighTot = 0;
 		int testX = 0;
 		int testY = 0;
 		
@@ -224,7 +277,7 @@ public class CellAutomaton extends JFrame
 			if (neighType != FIELD[x][y].getCellType())
 			{
 				diffNeighTot++;
-				DIFF_NEIGH[diffNeighTot][0] = i; // makes a list of neighbours that are different
+				DIFF_NEIGH[diffNeighTot-1][0] = i; // makes a list of neighbours that are different
 			}
 		} // diffNeighTot is total number of different neighbours
 		
@@ -299,7 +352,7 @@ public class CellAutomaton extends JFrame
 					FIELD[x][y] = swapCell;
 					FIELD[swapX][swapY] = FIELD[x][y];
 					System.out.println("swapped " + x + "," + y + " and " + swapX + "," + swapY + " ");
-				} */
+				} 
 				
 				swapCells(x,y,swapX,swapY);
 				System.out.println("swapped " + x + "," + y + " and " + swapX + "," + swapY + " ");
@@ -307,11 +360,94 @@ public class CellAutomaton extends JFrame
 				//System.out.println("cell in x,y: " + FIELD[x][y].getCellType());
 				//System.out.println("cell in swapx,swapy: " + FIELD[swapX][swapY].getCellType());
 			}
-		}
+		}*/
 	}
 	
 	// Calculates the energy of each cell using the 8 surrounding cells
-	public static double energyOfCell(int x, int y, double[] bindEnergies)
+  	// switchIndex == {1,1} if no swap is initiated and we just want the energy of the central cell
+  	public static double cellEnergy(Cell[][] surrounding, int[] switchIndex)
+  	{
+  		double totalE = 0.0;	// Stores the total Energy of the cell with or without a swap
+  		int neighbourType = 999;// Stores the type of neighbour
+  		Cell[][] newSurrounding = new Cell[3][3];	// will contain a new conformation if a switch is initiated
+  		
+  		boolean isSwitch = false; // true if a switch is initiated, false if switch index = 1,1
+  		boolean switched = false; // true if the switch has already been initiated (to make sure switch isn't done twice)
+  		
+  		// Initiates the switch if the indices indicate that the original conformation isn't being tested
+  		if (switchIndex[0] != 1 && switchIndex[1] != 1)	// if the switch index isn't switching the middle cell with itself
+  		{
+  			isSwitch = true;
+  			for (int i=0;i<surrounding.length;i++)
+  			{
+  				for (int j=0;j<surrounding[0].length;j++)
+  				{
+  					if (switched == false && (i == switchIndex[0] && j == switchIndex[1]) /*|| (i == 1 && j == 1)*/)	//if the loop lands on the switch index or on the middle cell
+  					{
+  						//surrounding[1][1].copyCell(newSurrounding[i][j]); // initiate the switch of middle cell and switch index cell in new conf array
+  						//surrounding[i][j].copyCell(newSurrounding[1][1]);
+  						Cell middle = surrounding[1][1];
+  						Cell switcher = newSurrounding[i][j];
+  						newSurrounding[i][j] = surrounding[1][1];
+  						newSurrounding[1][1] = switcher;
+  						switched = true;
+  					}
+  					else if (switched == false && (i==1 && j==1))
+  					{
+  						Cell middle = surrounding[1][1];
+  						Cell switcher = newSurrounding[i][j];
+  						newSurrounding[i][j] = middle;
+  						newSurrounding[1][1] = switcher;
+  						switched = true;
+  					}
+  					else
+  					{
+  						//surrounding[i][j].copyCell(newSurrounding[i][j]); // else just copy the cell exactly as is into the new conf array
+  						newSurrounding[i][j] = surrounding[i][j];
+  					}
+  				}
+  			}
+  			// TEST PRINT
+  			System.out.println("surrounding");
+  			for (int i=0; i<surrounding.length;i++)
+  			{
+  				for (int j=0;j<surrounding[0].length;j++)
+  				{
+  					System.out.print(surrounding[i][j].getCellType());
+  				}
+  				System.out.println();
+  			}
+  			System.out.println("new surrounding");
+  			for (int i=0; i<surrounding.length;i++)
+  			{
+  				for (int j=0;j<surrounding[0].length;j++)
+  				{
+  					System.out.print(newSurrounding[i][j].getCellType());
+  				}
+  				System.out.println();
+  			}
+  		}
+  		
+  		// Calculates energy
+  		for (int i=0;i<surrounding.length;i++)
+  		{
+  			for (int j=0;j<surrounding[0].length;j++)
+  			{
+  				if (isSwitch)
+  				{
+  					neighbourType = newSurrounding[i][j].getCellType();
+  					totalE += newSurrounding[i][j].getBindEnergies()[neighbourType-1];
+  				}	
+  				else
+  				{
+  					neighbourType = surrounding[i][j].getCellType();
+  					totalE += surrounding[i][j].getBindEnergies()[neighbourType-1];
+  				}
+  			}
+  		}
+  		return totalE;
+  	}
+	/*public static double energyOfCell(int x, int y, double[] bindEnergies)
 	{
 		double totalE = 0.0; // will contain total energy of cell and surrounding cells
 		int neighType = 0; // stores the integer code of the neighbouring cell
@@ -332,7 +468,7 @@ public class CellAutomaton extends JFrame
 			}
 		}
 		return totalE;
-	}
+	}*/
 	
 	// Double check this to make sure it chooses a valid cell every time (not a border)
 	public static int[] chooseRandomCell()
@@ -364,6 +500,17 @@ public class CellAutomaton extends JFrame
 		FIELD[x][y].setProportion(FIELD[swapX][swapY].getProportion());
 		FIELD[swapX][swapY].setProportion(temp.getProportion());
 	}
+	public static void printMatrix(Cell[][] array)
+	{
+		for (int i=0;i<array.length;i++)
+		{
+			for (int j=0;j<array[0].length;j++)
+			{
+				System.out.print(array[i][j].getCellType());
+			}
+			System.out.println();
+		}
+	}
    
   public static void main(String[] args)
   { 
@@ -374,13 +521,21 @@ public class CellAutomaton extends JFrame
 	  frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 	  setStepArray();
 	  int i = 0;
-	  
-	  while (true)
+	  boolean loop = true;
+	  while (loop)
 	  {
 		  /*try { Thread.sleep(250); }
 		  catch(InterruptedException ie) {}*/
-
-		  for (int j=0; j<FIELD_SIZE; j++)
+		  int[][] prevField = new int[FIELD_SIZE][FIELD_SIZE];
+		  
+		  for (int x=0; x<FIELD_SIZE; x++)
+		  {
+			  for (int y=0; y<FIELD_SIZE; y++)
+			  {
+				  prevField[x][y] = FIELD[x][y].getCellType();
+			  }
+		  }
+		  /*for (int j=0; j<FIELD_SIZE; j++)
 		  {
 			  System.out.println(j);
 			  for (int k=0; k<FIELD_SIZE; k++)
@@ -388,7 +543,7 @@ public class CellAutomaton extends JFrame
 				  System.out.print(FIELD[j][k].getCellType() + "  ");
 			  }
 			  System.out.println();
-		  }
+		  }*/
 		  moveCell();
 		  
 		  /*grid.updateGrid(FIELD);
@@ -399,7 +554,7 @@ public class CellAutomaton extends JFrame
 		  
 		  System.out.println(i);
 		  i++;
-		  
+		  if (i>100000) {loop=false;}
 		  
 
 	  }

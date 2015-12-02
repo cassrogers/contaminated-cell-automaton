@@ -10,7 +10,7 @@ public class Cell
   private RGB colour;
   
   // bindingEnergies will be indexed as follows:
-  // thisCell-1, thisCell-2, thisCell-3, thisCell-4, ... thisCell-10
+  // thisCell-0, thisCell-1, thisCell-2, thisCell-3, ... thisCell-9
   private double[] bindingEnergies;
   
   // stores a number 1...10
@@ -97,6 +97,15 @@ public class Cell
   public void setCellType(int newType)
   {
 	  this.cellType = newType;
+  }
+  
+  // Copies this Cell into newCell
+  public void copyCell(Cell newCell)
+  {
+	  newCell.setRGB(this.getRGB());
+	  this.copyBindEnergies(newCell.getBindEnergies());
+	  newCell.setProportion(this.getProportion());
+	  newCell.setCellType(this.getCellType());
   }
 
 }
