@@ -61,6 +61,7 @@ public class CellAutomaton //extends JFrame
   public static final int[] STEP_X = new int[9]; // used to hold offsets when looking at cell's neighbours
   public static final int[] STEP_Y = new int[9]; // used to hold offsets when looking at cell's neighbours
   public static final double[][] DIFF_NEIGH = new double[9][5];
+  public static double[][] BIND_ENERGIES = new double[MAX_TYPES][MAX_TYPES];
   static Random rand = new Random(3);
 
   
@@ -163,6 +164,39 @@ public class CellAutomaton //extends JFrame
         }
       }
     }
+  }
+  public static void setBindEnergies(double[][] energies, int noTypes)
+  {
+	  boolean isCorrect=false;
+	  while (isCorrect==false)
+	  {
+		  for (int i=0;i<noTypes;i++)
+		  {
+			  for (int j=i;j<noTypes;j++)
+			  {
+				  Scanner sc = new Scanner(System.in);
+				  int iCellType=i+1;
+				  int jCellType=j+1;
+				  System.out.println("Enter the binding energy (a negative Hamiltonian) for cell type " + iCellType + " binding to cell type " + jCellType + ".");
+				  double e = sc.nextDouble();
+				  energies[i][j] = e;
+				  energies[j][i] = e;
+			  }
+		  }
+		  System.out.println("Are these binding energies correct? (y/n)");
+		  for (int i=0;i<noTypes;i++)
+		  {
+			  for (int j=0;j<noTypes;j++)
+			  {
+				  System.out.print(energies[i][j] + " ");
+			  }
+			  System.out.println();
+		  }
+		  Scanner sc = new Scanner(System.in);
+		  char a = sc.next().charAt(0);
+		  if (a=='y') {isCorrect=true;}
+		  else if (a=='n') {isCorrect=false;}
+	  }
   }
 //==============================================================================================
 // >> SECTION 3: MAIN PROGRAM
@@ -386,24 +420,25 @@ public class CellAutomaton //extends JFrame
   					{
   						//surrounding[1][1].copyCell(newSurrounding[i][j]); // initiate the switch of middle cell and switch index cell in new conf array
   						//surrounding[i][j].copyCell(newSurrounding[1][1]);
-  						Cell middle = surrounding[1][1];
-  						Cell switcher = newSurrounding[i][j];
-  						newSurrounding[i][j] = surrounding[1][1];
-  						newSurrounding[1][1] = switcher;
+  						//newSurrounding[i][j] = surrounding[1][1];
+  						newSurrounding[i][j] = new Cell(surrounding[1][1].getRGB(),surrounding[1][1].getCellType(),surrounding[1][1].getProportion());
+  						//newSurrounding[1][1] = surrounding[i][j];
+  						newSurrounding[1][1] = new Cell(surrounding[i][j].getRGB(),surrounding[i][j].getCellType(),surrounding[i][j].getProportion());
   						switched = true;
   					}
   					else if (switched == false && (i==1 && j==1))
   					{
-  						Cell middle = surrounding[1][1];
-  						Cell switcher = newSurrounding[i][j];
-  						newSurrounding[i][j] = middle;
-  						newSurrounding[1][1] = switcher;
+  						newSurrounding[i][j] = new Cell(surrounding[1][1].getRGB(),surrounding[1][1].getCellType(),surrounding[1][1].getProportion());
+  						newSurrounding[1][1] = new Cell(surrounding[i][j].getRGB(),surrounding[i][j].getCellType(),surrounding[i][j].getProportion());
+  						//newSurrounding[i][j] = surrounding[1][1];
+  						//newSurrounding[1][1] = surrounding[i][j];
   						switched = true;
   					}
   					else
   					{
   						//surrounding[i][j].copyCell(newSurrounding[i][j]); // else just copy the cell exactly as is into the new conf array
-  						newSurrounding[i][j] = surrounding[i][j];
+  						//newSurrounding[i][j] = surrounding[i][j];
+  						newSurrounding[i][j] = new Cell(surrounding[i][j].getRGB(),surrounding[i][j].getCellType(),surrounding[i][j].getProportion());
   					}
   				}
   			}
@@ -519,7 +554,11 @@ public class CellAutomaton //extends JFrame
 	  Grid grid = new Grid(FIELD);
 	  JFrame frame = new JFrame("Cell Automaton");
 	  frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+	  System.out.println("How many cell types?");
+	  Scanner sc = new Scanner(System.in);
+	  int noTypes = sc.nextInt();
 	  setStepArray();
+	  setBindEnergies(BIND_ENERGIES,noTypes);
 	  int i = 0;
 	  boolean loop = true;
 	  while (loop)
