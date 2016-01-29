@@ -6,7 +6,7 @@ import java.util.*;
 public class Grid extends JPanel
 {
 	private static final int MAX_TYPES = 10;
-	private static final int FIELD_SIZE = 100;
+	private static final int FIELD_SIZE = 50;
 	private Cell[][] cells;
 	//private Cell[] cellTypes;
 	Random r = new Random();
@@ -110,7 +110,7 @@ public class Grid extends JPanel
 				{
 					graphics.setColor(Color.black);
 				}
-				graphics.fillOval(i*10,j*10,10,10);
+				graphics.fillOval(i*15,j*15,15,15);
 			}
 		}
 	}
